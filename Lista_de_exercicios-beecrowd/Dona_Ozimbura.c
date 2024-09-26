@@ -9,7 +9,7 @@ int main(){
     scanf("%d", &b);
     
     c = o - a - b;
-    //comentario // cometario2
+    //comentario // cometario2 // comentario 3
     if(c < a){
         c = a;
     }
