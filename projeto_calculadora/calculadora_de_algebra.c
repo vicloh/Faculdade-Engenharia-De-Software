@@ -42,7 +42,7 @@ void resolucaoSistemaLinear(double matriz[MAX_n][MAX_n+1], int n){
         }
     }
 }
-
+//oi
 void printMatriz(double matriz[MAX_n][MAX_n+1], int n){
 
     printf("Aqui está os valores da matriz original:\n");
