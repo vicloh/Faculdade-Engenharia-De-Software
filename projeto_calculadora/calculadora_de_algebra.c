@@ -1,6 +1,3 @@
-/******************************************************************************
-*******************************************************************************/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
@@ -8,41 +5,52 @@
 
 #define MAX_n 3
 
-void resolucaoSistemaLinear(double matriz[MAX_n][MAX_n+1], int n){
-    
-    for(int i = 0; i < n; i++){
-        int max_row = i;
-        
-        for(int k = i; k<n; k++){
-            if(fabs(matriz[k][i]) > fabs(matriz[max_row][i])){
-                max_row = k;
-            }
-        }
+void resolve_sistema_2x2(float a[2][3]) {
+    int i, j;
+    float fator, x[2];
 
-        for(int k = i; k <= n; k++){
-            double aux = matriz[max_row][k];
-            matriz[max_row][k] = matriz[i][k];
-            matriz[i][k] = aux;
-        }
-
-        for(int k = i +1; k<n; k++){
-            double fator = matriz[k][i] / matriz[i][i];
-            for(int j = i; j<= n; j++){
-                matriz[k][j] -= fator* matriz[i][j];
-            }
-        }
+    // Eliminação
+    fator = a[1][0] / a[0][0];
+    for (j = 0; j < 3; j++) {
+        a[1][j] = a[1][j] - fator * a[0][j];
     }
 
-    for (int i = n - 1; i >= 0; i--) {
-        matriz[i][n] /= matriz[i][i];
-        matriz[i][i] = 1;
-        for (int j = i - 1; j >= 0; j--) {
-            matriz[j][n] -= matriz[j][i] * matriz[i][n];
-            matriz[j][i] = 0;
-        }
-    }
+    // Resolução de y
+    x[1] = a[1][2] / a[1][1];
+
+    // Resolução de x
+    x[0] = (a[0][2] - a[0][1] * x[1]) / a[0][0];
+
+    printf("Soluções:\n");
+    printf("x = %.2f\n", x[0]);
+    printf("y = %.2f\n", x[1]);
 }
-//oi
+
+void resolve_sistema_3x3(float a[3][4]) {
+    int i, j, k;
+    float fator, x[3];
+
+    // Eliminação
+    for (i = 0; i < 2; i++) {
+        for (k = i + 1; k < 3; k++) {
+            fator = a[k][i] / a[i][i];
+            for (j = 0; j < 4; j++) {
+                a[k][j] = a[k][j] - fator * a[i][j];
+            }
+        }
+    }
+
+    // Resolução das variáveis
+    x[2] = a[2][3] / a[2][2];
+    x[1] = (a[1][3] - a[1][2] * x[2]) / a[1][1];
+    x[0] = (a[0][3] - a[0][2] * x[2] - a[0][1] * x[1]) / a[0][0];
+
+    printf("Soluções:\n");
+    printf("x = %.2f\n", x[0]);
+    printf("y = %.2f\n", x[1]);
+    printf("z = %.2f\n", x[2]);
+}
+
 void printMatriz(double matriz[MAX_n][MAX_n+1], int n){
 
     printf("Aqui está os valores da matriz original:\n");
@@ -56,32 +64,46 @@ void printMatriz(double matriz[MAX_n][MAX_n+1], int n){
 }
 
 void solucaoSistemaLinear(){    
-
     int n;
 
-    printf("Digite a dimensão da matriz quadrada:\n");
+    printf("Digite a dimensão da matriz(2x3 ou 3x4):\n");
     
     scanf("%d", &n);
     system("cls");
-    double matriz[MAX_n][MAX_n+1];
+    float matriz[n][n+1];
     
     printf("Digite os valores da matriz com espaço entre eles:\n");
-    for(int i=0; i<n; i++){
-        for(int j=0; j<=n; j++){
-            scanf("%lf", &matriz[i][j]);
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n+1; j++) {
+            scanf("%f", &matriz[i][j]);
         }
     }
     
     printf("Aqui está sua matriz:\n");
     printMatriz(matriz, n);
 
+    if (n==2)
+    {
+        resolve_sistema_2x2(matriz)
+    }
+    if (n==3)
+    {
+        resolve_sistema_3x3(matriz)
+    }
+    if (n!=3&&n!=2)
+    {
+        printf("Dimensão da matriz inválida. Aceito somente matrizes 2x3 e 3x4");
+        break;
+    }
+
+
+    
     resolucaoSistemaLinear(matriz, n);
 
     printf("Aqui está a resolucao da matriz na forma escalonada reduzida:\n");
     printMatriz(matriz, n);
 
     printf("Solucao do sistema:\n");
-    
 }
  
 int main(){
