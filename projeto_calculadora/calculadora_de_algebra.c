@@ -3,7 +3,38 @@
 #include <locale.h>
 #include <math.h>
 
-void resolve_sistema_2x2(float a[2][3]) {
+#define MAX 10
+
+int determinante(int mat[MAX][MAX], int n) {
+    int det = 0;
+    if (n == 1) {
+        return mat[0][0];
+    }
+
+    int temp[MAX][MAX];
+    int sinal = 1;
+
+    for (int f = 0; f < n; f++) {
+        int aux1 = 0;
+        for (int i = 1; i < n; i++) {
+            int aux2 = 0;
+            for (int j = 0; j < n; j++) {
+                if (j == f) {
+                    continue;
+                }
+                temp[aux1][aux2] = mat[i][j];
+                aux2++;
+            }
+            aux1++;
+        }
+        det += sinal * mat[0][f] * determinante(temp, n - 1);
+        sinal = -sinal;
+    }
+
+    return det;
+}
+
+void resolve_sistema_2x2(float a[MAX][MAX]) {
     int i, j;
     float fator, x[2];
 
@@ -36,7 +67,7 @@ void resolve_sistema_2x2(float a[2][3]) {
     printf("y = %.2f\n", x[1]);
 }
 
-void resolve_sistema_3x3(float a[3][4]) {
+void resolve_sistema_3x3(float a[MAX][MAX]) {
     int i, j, k;
     float fator, x[3];
 
@@ -90,7 +121,7 @@ void solucaoSistemaLinear(){
 
     system("cls");
 
-    float matriz[n][n+1];
+    float matriz[MAX][MAX];
     
     printf("Digite os valores da matriz com espaço entre eles:\n");
     for (int i = 0; i < n; i++) {
@@ -118,13 +149,54 @@ void solucaoSistemaLinear(){
     }
 
 }
- 
+    
+void verificarTransformacaoMatriz() {
+
+    int mat[MAX][MAX];
+    int linhas, colunas;
+
+    printf("Digite o numeros de linhas da matriz: ");
+    scanf("%d", &linhas);
+
+    printf("Digite o numeros de colunas da matriz: ");
+    scanf("%d", &colunas);
+
+    printf("Digite os elementos da matriz %dx%d:\n", linhas, colunas);
+    for (int i = 0; i < linhas; i++) {
+        for (int j = 0; j < colunas; j++) {
+            scanf("%d", &mat[i][j]);
+        }
+    }
+
+    if (linhas != colunas) {
+        printf("A matriz não é quadrada, então não pode ser bijetiva.\n");
+
+        if (linhas > colunas) {
+            printf("A transformação pode ser sobrejetiva, mas não é injetiva.\n");
+        }
+        if (linhas < colunas) {
+            printf("A transformação pode ser injetiva, mas não é sobrejetiva.\n");
+        }
+    } 
+
+    if (linhas == colunas) {
+        int det = determinante(mat, linhas);
+        if (det != 0) {
+            printf("A matriz é bijetiva (injetiva e sobrejetiva).\n");
+        } 
+        if (det == 0) {
+            printf("A matriz não é bijetiva.\n");
+            printf("A transformação não é injetiva.\n");
+        }
+    }
+}
+
 int main(){
 
     int a;
 
     do {
-        printf("Digite o número da opção desejada: ");
+        printf("\nDigite o número da opção desejada: ");
         printf("\n1- Resolução de Sistemas Lineares\n");
         printf("0- Encerra o programa\n");
         scanf("%d", &a);
@@ -133,6 +205,9 @@ int main(){
        switch(a){           
             case 1:
                 solucaoSistemaLinear();
+                break;
+            case 2:
+                verificarTransformacaoMatriz();
                 break;
             case 0:
                 printf("Programa encerrado ;)");
