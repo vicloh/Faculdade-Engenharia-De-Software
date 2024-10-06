@@ -3,7 +3,7 @@
 #include <locale.h>
 #include <math.h>
 
-#define MAX 10
+#define MAX 4
 
 int determinante(int mat[MAX][MAX], int n) {
     int det = 0;
@@ -81,7 +81,7 @@ void resolve_sistema_3x3(float a[MAX][MAX]) {
         }
     }
 
-    //Metodo de classificação com base no resultado da eliminação
+    //Metodo de classificação de sistema com base no resultado da eliminação
     if (a[2][2] == 0){
         if (a[2][3] == 0){ 
             printf("O sistema é Possível e Indeterminado (SPI).\n");
@@ -191,6 +191,46 @@ void verificarTransformacaoMatriz() {
     }
 }
 
+void determinacaoBase(){
+
+    int dim, det;
+    int matriz[MAX][MAX];
+    int matrizTransposta[MAX][MAX];
+    
+    printf("Insira o valor 2 para bases em R^2 ou 3 para bases em R^3:\n");
+    scanf("%d", &dim);
+
+    if(dim != 2 && dim != 3){
+        printf("Só aceito os seguintes valores: 2 ou 3\n");
+        return determinacaoBase(); 
+    }
+
+    for(int i=0; i<dim; i++){
+        printf("Vetor %d: ", i+1);
+        for(int j=0; j<dim; j++){
+            scanf("%d", &matriz[i][j]);
+        }
+    }
+
+    printf("\n");
+    
+    for(int i=0; i<dim; i++){
+        for(int j=0; j<dim; j++){
+            matrizTransposta[j][i] = matriz[i][j];
+        }
+    }
+
+    det = determinante(matriz, dim);
+
+    if(det != 0){
+        printf("Os vetores formam uma base em R^%d\n", dim);
+    }
+
+    if(det == 0){
+        printf("Os vetores NÃO formam uma base em R^%d\n", dim);
+    }
+}
+
 int main(){
 
     int a;
@@ -198,6 +238,8 @@ int main(){
     do {
         printf("\nDigite o número da opção desejada: ");
         printf("\n1- Resolução de Sistemas Lineares\n");
+        printf("\n2- Verificação de Injetividade, Sobrejetividade e Bijetividade\n");
+        printf("\n3- Determinação de Bases\n");
         printf("0- Encerra o programa\n");
         scanf("%d", &a);
         system("cls");
@@ -208,6 +250,9 @@ int main(){
                 break;
             case 2:
                 verificarTransformacaoMatriz();
+                break;
+            case 3:
+                determinacaoBase();
                 break;
             case 0:
                 printf("Programa encerrado ;)");
