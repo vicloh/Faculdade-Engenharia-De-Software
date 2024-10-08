@@ -5,8 +5,22 @@
 
 #define MAX 4
 
+// Função para limpar a tela de acordo com o sistema operacional
+void limparTela() {
+    #ifdef _WIN32
+        system("cls"); // Comando para limpar no Windows
+    #elif __linux__
+        system("clear"); // Comando para limpar no Linux
+    #else
+        printf("\033[H\033[J"); // Alternativa usando escape sequences ANSI
+    #endif
+}
+
+//Função para calcular o determinante de uma matriz quadrada
 int determinante(int mat[MAX][MAX], int n) {
     int det = 0;
+
+    //Caso para matriz 1x1
     if (n == 1) {
         return mat[0][0];
     }
@@ -14,6 +28,7 @@ int determinante(int mat[MAX][MAX], int n) {
     int temp[MAX][MAX];
     int sinal = 1;
 
+    // Calcula  o determinante
     for (int f = 0; f < n; f++) {
         int aux1 = 0;
         for (int i = 1; i < n; i++) {
@@ -28,15 +43,18 @@ int determinante(int mat[MAX][MAX], int n) {
             aux1++;
         }
         det += sinal * mat[0][f] * determinante(temp, n - 1);
-        sinal = -sinal;
+        sinal = -sinal; // Alterna o sinal entre positivo e negativo
     }
 
     return det;
 }
 
+// Função para resolver sistema 2x2
 void resolve_sistema_2x2(float a[MAX][MAX]) {
     int i, j;
     float fator, x[2];
+
+    printf("\n--- Resolução de Sistema 2x2 ---\n");
 
     // Eliminação
     fator = a[1][0] / a[0][0];
@@ -44,7 +62,7 @@ void resolve_sistema_2x2(float a[MAX][MAX]) {
         a[1][j] = a[1][j] - fator * a[0][j];
     }
 
-    //Metodo de classificação com base no resultado da eliminação
+    //Metodo de verificação de SPI ou SI com base no resultado da eliminação
     if (a[1][1] == 0){
         if (a[1][2] == 0){
             printf("O sistema é Possível e Indeterminado (SPI).\n");
@@ -67,9 +85,12 @@ void resolve_sistema_2x2(float a[MAX][MAX]) {
     printf("y = %.2f\n", x[1]);
 }
 
+// Função para resolver sistema 3x3
 void resolve_sistema_3x3(float a[MAX][MAX]) {
     int i, j, k;
     float fator, x[3];
+
+    printf("\n--- Resolução de Sistema 3x3 ---\n");
 
     // Eliminação
     for (i = 0; i < 2; i++) {
@@ -81,7 +102,7 @@ void resolve_sistema_3x3(float a[MAX][MAX]) {
         }
     }
 
-    //Metodo de classificação de sistema com base no resultado da eliminação
+    //Metodo de verificação de SPI ou SI com base no resultado da eliminação
     if (a[2][2] == 0){
         if (a[2][3] == 0){ 
             printf("O sistema é Possível e Indeterminado (SPI).\n");
@@ -105,21 +126,19 @@ void resolve_sistema_3x3(float a[MAX][MAX]) {
 
 }
 
-
+// Função principal para resolução de sistemas lineares
 void solucaoSistemaLinear(){    
     int n;
 
-    printf("Digite a dimensão da matriz(2x3 ou 3x4):\n");
+    printf("Digite a dimensão da matriz: 2 para (2x3) ou 3 para(3x4):\n");
     
     scanf("%d", &n);
 
     if (n!=3&&n!=2)
     {
-        printf("Dimensão da matriz inválida. Aceito somente matrizes 2x3 e 3x4");
-        return;
+        printf("Dimensão da matriz inválida. Aceito somente matrizes 2x3 e 3x4.\n");
+        return solucaoSistemaLinear();
     }
-
-    system("cls");
 
     float matriz[MAX][MAX];
     
@@ -130,11 +149,11 @@ void solucaoSistemaLinear(){
         }
     }
     
-    printf("Aqui está os valores da matriz original:\n");
+    printf("\nMatriz original:\n");
     for(int i=0; i<n; i++){
         printf("\n");
         for(int j=0; j<=n; j++){
-            printf("%0.2f  ", matriz[i][j]);
+            printf("%.2f  ", matriz[i][j]);
         }
         printf("\n");
     }
@@ -149,7 +168,9 @@ void solucaoSistemaLinear(){
     }
 
 }
-    
+
+// Função para verificar se a matriz é bijetiva
+
 void verificarTransformacaoMatriz() {
 
     int mat[MAX][MAX];
@@ -191,6 +212,7 @@ void verificarTransformacaoMatriz() {
     }
 }
 
+// Função para determinar se os vetores formam uma base
 void determinacaoBase(){
 
     int dim, det;
@@ -201,7 +223,7 @@ void determinacaoBase(){
     scanf("%d", &dim);
 
     if(dim != 2 && dim != 3){
-        printf("Só aceito os seguintes valores: 2 ou 3\n");
+        printf("Dimensão inválida! Aceito somente R^2 ou R^3.\n");
         return determinacaoBase(); 
     }
 
@@ -236,13 +258,14 @@ int main(){
     int a;
 
     do {
-        printf("\nDigite o número da opção desejada: ");
-        printf("\n1- Resolução de Sistemas Lineares\n");
-        printf("\n2- Verificação de Injetividade, Sobrejetividade e Bijetividade\n");
+        printf("\nDigite o número da opção desejada: \n");
+        printf("\n1- Resolução de Sistemas Lineares");
+        printf("\n2- Verificação de Injetividade, Sobrejetividade e Bijetividad");
         printf("\n3- Determinação de Bases\n");
         printf("0- Encerra o programa\n");
         scanf("%d", &a);
-        system("cls");
+
+        limparTela();//limpa tela
 
        switch(a){           
             case 1:
@@ -257,9 +280,7 @@ int main(){
             case 0:
                 printf("Programa encerrado ;)");
                 break;
-       }
-       //printf("\nDeseja continuar?");
-        
+       }        
     } while(a!=0);
 
     return 0;
