@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <math.h>
+#include <string.h>
 
 #define MAX 4
 
@@ -28,7 +29,7 @@ int determinante(int mat[MAX][MAX], int n) {
     int temp[MAX][MAX];
     int sinal = 1;
 
-    // Calcula  o determinante
+    
     for (int f = 0; f < n; f++) {
         int aux1 = 0;
         for (int i = 1; i < n; i++) {
@@ -37,13 +38,13 @@ int determinante(int mat[MAX][MAX], int n) {
                 if (j == f) {
                     continue;
                 }
-                temp[aux1][aux2] = mat[i][j];
+                temp[aux1][aux2] = mat[i][j];//Elimina linha e coluna onde f e j são iguais
                 aux2++;
             }
             aux1++;
         }
-        det += sinal * mat[0][f] * determinante(temp, n - 1);
-        sinal = -sinal; // Alterna o sinal entre positivo e negativo
+        det += sinal * mat[0][f] * determinante(temp, n - 1); // Calcula o determinante
+        sinal = -sinal;
     }
 
     return det;
@@ -142,11 +143,18 @@ void solucaoSistemaLinear(){
 
     float matriz[MAX][MAX];
     
-    printf("Digite os valores da matriz com espaço entre eles:\n");
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n+1; j++) {
-            scanf("%f", &matriz[i][j]);
+    char equacao[100];
+    int i = 0;
+    for (int j = 0; j<n;j++) {
+        printf("Digite a %d equação:\n",j+1);
+        scanf(" %[^\n]", equacao);
+        char *token1 = strtok(equacao, " xyz+=\n"); 
+        while (token1 != NULL) {
+            sscanf(token1, "%f",  &matriz[j][i]);
+            i++;
+            token1 = strtok(NULL, " xyz+=\n");
         }
+        i=0;
     }
     
     printf("\nMatriz original:\n");
@@ -253,15 +261,102 @@ void determinacaoBase(){
     }
 }
 
+void calcularAutovalores(double a, double b, double c, double d, double *lambda1, double *lambda2) {
+    double traco = a + d;
+    double det = (a * d) - (b * c);
+
+    double discriminante = traco * traco - 4 * det;
+
+    if (discriminante < 0) {
+        printf("A matriz não pode ser diagonalizada com autovalores reais.\n");
+        return;
+    }
+
+    *lambda1 = (traco + sqrt(discriminante)) / 2; 
+    *lambda2 = (traco - sqrt(discriminante)) / 2;
+}
+
+void calcularAutovetor(double a, double b, double c, double d, double lambda, double *x, double *y) {
+    
+   if (b != 0 || c != 0) {
+        if (b != 0) {
+            *x = -(a - lambda) / b;
+            *y =1;
+        } else if (c != 0) {
+            *x = -(d - lambda) / c;
+            *y = 1;
+        }
+    } else {
+        if (a == lambda) {
+            *x = 1;
+            *y = 0;
+        } else if (d == lambda) {
+            *x = 0;
+            *y = 1;
+        }
+    }
+}
+
+
+void calculoAutovaloresAutovetores() {
+    double a, b, c, d;
+    double lambda1, lambda2;
+    double v1_x, v1_y, v2_x, v2_y;
+
+    printf("Digite os elementos da matriz 2x2 (a, b, c, d): ");
+    scanf("%lf %lf %lf %lf", &a, &b, &c, &d);
+
+    calcularAutovalores(a, b, c, d, &lambda1, &lambda2);
+    printf("Autovalores: lambda1 = %.2f, lambda2 = %.2f\n", lambda1, lambda2);
+
+    // Calcular autovetor lambda1
+    calcularAutovetor(a, b, c, d, lambda1, &v1_x, &v1_y);
+    printf("Autovetor correspondente a lambda1: v1 = (%.2f, %.2f)\n", v1_x, v1_y);
+
+    // Calcular autovetor lambda2
+    calcularAutovetor(a, b, c, d, lambda2, &v2_x, &v2_y);
+    printf("Autovetor correspondente a lambda2: v2 = (%.2f, %.2f)\n", v2_x, v2_y);
+}
+
+void diagonalizacao(){
+    double a, b, c, d;
+    double lambda1, lambda2;
+    double v1_x, v1_y, v2_x, v2_y;
+
+    printf("Digite os elementos da matriz 2x2 (a, b, c, d): ");
+    scanf("%lf %lf %lf %lf", &a, &b, &c, &d);
+
+    // Calcular diagonalização
+    calcularAutovalores(a, b, c, d, &lambda1, &lambda2);
+    printf("Autovalores: lambda1 = %.2f, lambda2 = %.2f\n", lambda1, lambda2);
+    
+    printf("Matriz diagonal D:\n");
+    printf("[ %.2f, %.2f ]\n", lambda1, 0.0);
+    printf("[ %.2f, %.2f ]\n", 0.0, lambda2);
+
+    // Formar a matriz de mudança de base
+    calcularAutovetor(a, b, c, d, lambda1, &v1_x, &v1_y);
+    printf("Autovetor correspondente a lambda1: v1 = (%.2f, %.2f)\n", v1_x, v1_y);
+
+    calcularAutovetor(a, b, c, d, lambda2, &v2_x, &v2_y);
+    printf("Autovetor correspondente a lambda2: v2 = (%.2f, %.2f)\n", v2_x, v2_y);
+
+    printf("Matriz de mudança de base P:\n");
+    printf("[ %.2f, %.2f ]\n",v1_x,  v2_x);
+    printf("[ %.2f, %.2f ]\n",v1_y,  v2_y);
+}
+
 int main(){
 
     int a;
 
     do {
-        printf("\nDigite o número da opção desejada: \n");
-        printf("\n1- Resolução de Sistemas Lineares");
-        printf("\n2- Verificação de Injetividade, Sobrejetividade e Bijetividad");
+        printf("\nDigite o número da opção desejada: ");
+        printf("\n1- Resolução de Sistemas Lineares\n");
+        printf("\n2- Verificação de Injetividade, Sobrejetividade e Bijetividade\n");
         printf("\n3- Determinação de Bases\n");
+        printf("\n4- Cálculo de Autovalores e Autovetores de matrizes\n");
+        printf("\n5- Diagonalização de Matrizes 2x2\n");
         printf("0- Encerra o programa\n");
         scanf("%d", &a);
 
@@ -276,6 +371,12 @@ int main(){
                 break;
             case 3:
                 determinacaoBase();
+                break;
+            case 4:
+                calculoAutovaloresAutovetores();
+                break;
+            case 5:
+                diagonalizacao();
                 break;
             case 0:
                 printf("Programa encerrado ;)");
