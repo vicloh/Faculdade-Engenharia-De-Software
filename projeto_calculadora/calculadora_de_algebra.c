@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <math.h>
+#include <string.h>
 
 #define MAX 4
 
@@ -122,21 +123,24 @@ void solucaoSistemaLinear(){
     system("cls");
 
     float matriz[MAX][MAX];
+    float matriz1[MAX][MAX];
     
     char equacao[100];
+    char equacao1[100];
     int i = 0;
-
-    for (int j = 0; j < n; j++)
-        {
-            printf("Digite a %d equação:\n",j+1);
-            gets(equacao, 10, stdin);
-            char *token = strtok(equacao, " xyz+-=\n"); 
-            while (token != NULL) {
-                sscanf(token, "%f",  &matriz[j][i]);
-                i++;
-                token = strtok(NULL, " xyz+-=\n");
-            }
+    int j = 0;
+    for (int j = 0; j<n;j++) {
+        printf("Digite a %d equação:\n",j+1);
+        scanf(" %[^\n]", equacao);
+        char *token1 = strtok(equacao, " xyz+=\n"); 
+        while (token1 != NULL) {
+            sscanf(token1, "%f",  &matriz[j][i]);
+            i++;
+            token1 = strtok(NULL, " xyz+=\n");
+        }
+        i=0;
     }
+    
     
     printf("Aqui está os valores da matriz original:\n");
     for(int i=0; i<n; i++){
