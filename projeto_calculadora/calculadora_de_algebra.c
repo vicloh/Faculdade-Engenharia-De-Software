@@ -4,9 +4,17 @@
 #include <math.h>
 #include <string.h>
 
+#define RED     "\x1b[31m"
+#define GREEN   "\x1b[32m"
+#define RESET   "\x1b[0m"
+
 #define MAX 4
 
-// Função para limpar a tela de acordo com o sistema operacional
+/*=======================================
+        Made by Victor's
+ ========================================*/
+
+// Funcao para limpar a tela de acordo com o sistema operacional
 void limparTela() {
     #ifdef _WIN32
         system("cls"); // Comando para limpar no Windows
@@ -17,7 +25,7 @@ void limparTela() {
     #endif
 }
 
-//Função para calcular o determinante de uma matriz quadrada
+//Funcao para calcular o determinante de uma matriz quadrada
 int determinante(int mat[MAX][MAX], int n) {
     int det = 0;
 
@@ -38,7 +46,7 @@ int determinante(int mat[MAX][MAX], int n) {
                 if (j == f) {
                     continue;
                 }
-                temp[aux1][aux2] = mat[i][j];//Elimina linha e coluna onde f e j são iguais
+                temp[aux1][aux2] = mat[i][j];//Elimina linha e coluna onde f e j sao iguais
                 aux2++;
             }
             aux1++;
@@ -50,50 +58,51 @@ int determinante(int mat[MAX][MAX], int n) {
     return det;
 }
 
-// Função para resolver sistema 2x2
+// Funcao para resolver sistema 2x2
 void resolve_sistema_2x2(float a[MAX][MAX]) {
     int i, j;
     float fator, x[2];
 
-    printf("\n--- Resolução de Sistema 2x2 ---\n");
+    printf("\n--- Resolucao de Sistema 2x2 ---\n");
 
-    // Eliminação
+    // Eliminacao
     fator = a[1][0] / a[0][0];
     for (j = 0; j < 3; j++) {
         a[1][j] = a[1][j] - fator * a[0][j];
     }
 
-    //Metodo de verificação de SPI ou SI com base no resultado da eliminação
+    //Metodo de verificacao de SPI ou SI com base no resultado da eliminacao
     if (a[1][1] == 0){
         if (a[1][2] == 0){
-            printf("O sistema é Possível e Indeterminado (SPI).\n");
+            printf(GREEN"Sistema Possível Indeterminado (SPI).\n"RESET);
             return;
         } 
         else{
-            printf("O sistema é Impossível (SI).\n");
+            printf(GREEN"Sistema Impossivel (SI).\n"RESET);
             return;
         }
     }
 
-    // Resolução de y
+    // Resolucao de y
     x[1] = a[1][2] / a[1][1];
 
-    // Resolução de x
+    // Resolucao de x
     x[0] = (a[0][2] - a[0][1] * x[1]) / a[0][0];
 
-    printf("Soluções:\n");
-    printf("x = %.2f\n", x[0]);
-    printf("y = %.2f\n", x[1]);
+    printf("Solucao:\n");
+    printf(GREEN "x = %.2f" RESET "\n", x[0]);
+    printf(GREEN "y = %.2f" RESET "\n", x[1]);
+
 }
 
-// Função para resolver sistema 3x3
+// Funcao para resolver sistema 3x3
 void resolve_sistema_3x3(float a[MAX][MAX]) {
     int i, j, k;
     float fator, x[3];
 
-    printf("\n--- Resolução de Sistema 3x3 ---\n");
+    printf("\n--- Resolucao de Sistema 3x3 ---\n");
 
-    // Eliminação
+    // Eliminacao
     for (i = 0; i < 2; i++) {
         for (k = i + 1; k < 3; k++) {
             fator = a[k][i] / a[i][i];
@@ -103,41 +112,43 @@ void resolve_sistema_3x3(float a[MAX][MAX]) {
         }
     }
 
-    //Metodo de verificação de SPI ou SI com base no resultado da eliminação
+    //Metodo de verificacao de SPI ou SI com base no resultado da eliminacao
     if (a[2][2] == 0){
         if (a[2][3] == 0){ 
-            printf("O sistema é Possível e Indeterminado (SPI).\n");
+            printf(GREEN "O sistema e Possível e Indeterminado (SPI)." RESET "\n");
             return;
         } 
         else{
-            printf("O sistema é Impossível (SI).\n");
+            printf(GREEN "O sistema e Impossível (SI)." RESET "\n");
             return;
         }
     }
 
-    // Resolução das variáveis
+    // Resolucao das variaveis
     x[2] = a[2][3] / a[2][2];
     x[1] = (a[1][3] - a[1][2] * x[2]) / a[1][1];
     x[0] = (a[0][3] - a[0][2] * x[2] - a[0][1] * x[1]) / a[0][0];
 
-    printf("Soluções:\n");
-    printf("x = %.2f\n", x[0]);
-    printf("y = %.2f\n", x[1]);
-    printf("z = %.2f\n", x[2]);
+    printf("Solucao:\n");
+    printf(GREEN "x = %.2f" RESET "\n", x[0]);
+    printf(GREEN "y = %.2f" RESET "\n", x[1]);
+    printf(GREEN "z = %.2f" RESET "\n", x[2]);
 
 }
 
-// Função principal para resolução de sistemas lineares
+// Funcao principal para resolucao de sistema linear
 void solucaoSistemaLinear(){    
     int n;
+    desenharLinhadupla();
+    centralizarTexto("Digite o numero de equacoes lineares do sistema:(2 ou 3):");
+    desenharLinhadupla();
 
-    printf("Digite a dimensão da matriz: 2 para (2x3) ou 3 para(3x4):\n");
-    
     scanf("%d", &n);
+    limparTela();
 
-    if (n!=3&&n!=2)
+    if (n!=3&&n!=2)//Condição de erro
     {
-        printf("Dimensão da matriz inválida. Aceito somente matrizes 2x3 e 3x4.\n");
+        printf(RED "--Dimensao do sistema invalido. Aceito somente sistemas 2x2 e 3x3."RESET "\n");
         return solucaoSistemaLinear();
     }
 
@@ -145,11 +156,11 @@ void solucaoSistemaLinear(){
     
     char equacao[100];
     int i = 0;
-    for (int j = 0; j<n;j++) {
-        printf("Digite a %d equação:\n",j+1);
+    for (int j = 0; j<n;j++) {//Armazena os valores da equação
+        printf("Digite a %d equacao:\n",j+1);
         scanf(" %[^\n]", equacao);
         char *token1 = strtok(equacao, " xyz+=\n"); 
-        while (token1 != NULL) {
+        while (token1 != NULL) { 
             sscanf(token1, "%f",  &matriz[j][i]);
             i++;
             token1 = strtok(NULL, " xyz+=\n");
@@ -174,11 +185,10 @@ void solucaoSistemaLinear(){
     {
         resolve_sistema_3x3(matriz);
     }
-
+    
 }
 
-// Função para verificar se a matriz é bijetiva
-
+// Funcao para verificar se a matriz e bijetiva
 void verificarTransformacaoMatriz() {
 
     int mat[MAX][MAX];
@@ -190,37 +200,51 @@ void verificarTransformacaoMatriz() {
     printf("Digite o numeros de colunas da matriz: ");
     scanf("%d", &colunas);
 
-    printf("Digite os elementos da matriz %dx%d:\n", linhas, colunas);
+    printf("\nDigite os elementos da matriz %dx%d:\n\n", linhas, colunas);
     for (int i = 0; i < linhas; i++) {
         for (int j = 0; j < colunas; j++) {
+            printf("Digite o valor para a posição [%d][%d]: ", i, j);
             scanf("%d", &mat[i][j]);
         }
     }
 
+    printf("\n--Matriz original--\n");
+    printf("-------------------------\n");
+    for(int i=0; i<linhas; i++){
+        printf("| ");
+        for(int j=0; j<colunas; j++){
+            printf("%d  ", mat[i][j]);
+        }
+        printf("|\n");
+    }
+    printf("-------------------------\n");
+
+    //Verifica se a transformacao da matriz pode ser injetiva, sobrejetiva ou bijetiva
     if (linhas != colunas) {
-        printf("A matriz não é quadrada, então não pode ser bijetiva.\n");
+        printf(GREEN"A matriz nao e quadrada, entao nao pode ser bijetiva.\n"RESET);
 
         if (linhas > colunas) {
-            printf("A transformação pode ser sobrejetiva, mas não é injetiva.\n");
+            printf(GREEN"A transformacao pode ser sobrejetiva, mas nao e injetiva.\n"RESET);
         }
         if (linhas < colunas) {
-            printf("A transformação pode ser injetiva, mas não é sobrejetiva.\n");
+            printf(GREEN"A transformacao pode ser injetiva, mas nao e sobrejetiva.\n"RESET);
         }
     } 
 
+    //Verifica 
     if (linhas == colunas) {
         int det = determinante(mat, linhas);
         if (det != 0) {
-            printf("A matriz é bijetiva (injetiva e sobrejetiva).\n");
+            printf(GREEN"A matriz e bijetiva (injetiva e sobrejetiva).\n"RESET);
         } 
         if (det == 0) {
-            printf("A matriz não é bijetiva.\n");
-            printf("A transformação não é injetiva.\n");
+            printf(GREEN"A matriz nao e bijetiva.\n"RESET);
+            printf(GREEN"A transformacao nao e injetiva.\n"RESET);
         }
     }
 }
 
-// Função para determinar se os vetores formam uma base
+// Funcao para determinar se os vetores formam uma base
 void determinacaoBase(){
 
     int dim, det;
@@ -230,8 +254,8 @@ void determinacaoBase(){
     printf("Insira o valor 2 para bases em R^2 ou 3 para bases em R^3:\n");
     scanf("%d", &dim);
 
-    if(dim != 2 && dim != 3){
-        printf("Dimensão inválida! Aceito somente R^2 ou R^3.\n");
+    if(dim != 2 && dim != 3){//Condição de erro
+        printf(RED"Dimensao invalida! Aceito somente R^2 ou R^3."RESET"\n");
         return determinacaoBase(); 
     }
 
@@ -250,17 +274,17 @@ void determinacaoBase(){
         }
     }
 
-    det = determinante(matriz, dim);
+    det = determinante(matrizTransposta, dim);//calcula determinante da matriz gerada
 
     if(det != 0){
-        printf("Os vetores formam uma base em R^%d\n", dim);
+        printf(GREEN"Os vetores formam uma base em R^%d"RESET "\n", dim);
     }
 
     if(det == 0){
-        printf("Os vetores NÃO formam uma base em R^%d\n", dim);
+        printf(GREEN"Os vetores NAO formam uma base em R^%d"RESET "\n", dim);
     }
 }
-
+//função para calcular autovalor
 void calcularAutovalores(double a, double b, double c, double d, double *lambda1, double *lambda2) {
     double traco = a + d;
     double det = (a * d) - (b * c);
@@ -268,14 +292,14 @@ void calcularAutovalores(double a, double b, double c, double d, double *lambda1
     double discriminante = traco * traco - 4 * det;
 
     if (discriminante < 0) {
-        printf("A matriz não pode ser diagonalizada com autovalores reais.\n");
+        printf(GREEN"A matriz nao pode ser diagonalizada com autovalores reais.\n"RESET);
         return;
     }
-
+    //realiza a raiz quadrada
     *lambda1 = (traco + sqrt(discriminante)) / 2; 
     *lambda2 = (traco - sqrt(discriminante)) / 2;
 }
-
+//função para calcular autovetor
 void calcularAutovetor(double a, double b, double c, double d, double lambda, double *x, double *y) {
     
    if (b != 0 || c != 0) {
@@ -296,26 +320,25 @@ void calcularAutovetor(double a, double b, double c, double d, double lambda, do
         }
     }
 }
-
-
+//função para inserir valores e chamar as funções de autovetor e autovalor para realizar matematica
 void calculoAutovaloresAutovetores() {
     double a, b, c, d;
     double lambda1, lambda2;
     double v1_x, v1_y, v2_x, v2_y;
 
-    printf("Digite os elementos da matriz 2x2 (a, b, c, d): ");
+    printf("Digite os elementos da matriz 2x2 (a, b, c, d): \n");
     scanf("%lf %lf %lf %lf", &a, &b, &c, &d);
 
     calcularAutovalores(a, b, c, d, &lambda1, &lambda2);
-    printf("Autovalores: lambda1 = %.2f, lambda2 = %.2f\n", lambda1, lambda2);
+    printf("Autovalores:"GREEN" lambda1 = %.2f, lambda2 = %.2f"RESET"\n", lambda1, lambda2);
 
     // Calcular autovetor lambda1
     calcularAutovetor(a, b, c, d, lambda1, &v1_x, &v1_y);
-    printf("Autovetor correspondente a lambda1: v1 = (%.2f, %.2f)\n", v1_x, v1_y);
+    printf("Autovetor correspondente a lambda1:"GREEN" v1 = (%.2f, %.2f)"RESET"\n", v1_x, v1_y);
 
     // Calcular autovetor lambda2
     calcularAutovetor(a, b, c, d, lambda2, &v2_x, &v2_y);
-    printf("Autovetor correspondente a lambda2: v2 = (%.2f, %.2f)\n", v2_x, v2_y);
+    printf("Autovetor correspondente a lambda2: "GREEN"v2 = (%.2f, %.2f)"RESET"\n", v2_x, v2_y);
 }
 
 void diagonalizacao(){
@@ -323,46 +346,79 @@ void diagonalizacao(){
     double lambda1, lambda2;
     double v1_x, v1_y, v2_x, v2_y;
 
-    printf("Digite os elementos da matriz 2x2 (a, b, c, d): ");
+    printf("Digite os elementos da matriz 2x2 (a, b, c, d): \n");
     scanf("%lf %lf %lf %lf", &a, &b, &c, &d);
 
-    // Calcular diagonalização
+    // Calcular diagonalizacao
     calcularAutovalores(a, b, c, d, &lambda1, &lambda2);
-    printf("Autovalores: lambda1 = %.2f, lambda2 = %.2f\n", lambda1, lambda2);
+    printf("Autovalores: "GREEN"lambda1 = %.2f, lambda2 = %.2f"RESET"\n", lambda1, lambda2);
     
     printf("Matriz diagonal D:\n");
-    printf("[ %.2f, %.2f ]\n", lambda1, 0.0);
-    printf("[ %.2f, %.2f ]\n", 0.0, lambda2);
+    printf(GREEN"[ %.2f, %.2f ]"RESET"\n", lambda1, 0.0);
+    printf(GREEN"[ %.2f, %.2f ]"RESET"\n", 0.0, lambda2);
 
-    // Formar a matriz de mudança de base
+    // Formar a matriz de mudanca de base
     calcularAutovetor(a, b, c, d, lambda1, &v1_x, &v1_y);
-    printf("Autovetor correspondente a lambda1: v1 = (%.2f, %.2f)\n", v1_x, v1_y);
+    printf("Autovetor correspondente a lambda1: "GREEN"v1 = (%.2f, %.2f)"RESET"\n", v1_x, v1_y);
 
     calcularAutovetor(a, b, c, d, lambda2, &v2_x, &v2_y);
-    printf("Autovetor correspondente a lambda2: v2 = (%.2f, %.2f)\n", v2_x, v2_y);
+    printf("Autovetor correspondente a lambda2: "GREEN"v2 = (%.2f, %.2f)"RESET"\n", v2_x, v2_y);
 
-    printf("Matriz de mudança de base P:\n");
-    printf("[ %.2f, %.2f ]\n",v1_x,  v2_x);
-    printf("[ %.2f, %.2f ]\n",v1_y,  v2_y);
+    printf("Matriz de mudanca de base P:\n");
+    printf(GREEN"[ %.2f, %.2f ]"RESET"\n",v1_x,  v2_x);
+    printf(GREEN"[ %.2f, %.2f ]"RESET"\n",v1_y,  v2_y);
+}
+//a partir daqui, funções para personalisar textos
+void centralizarTexto(const char* texto) {
+    int len = strlen(texto);
+    int espacos = (80 - len) / 2;
+    for (int i = 0; i < espacos; i++) {
+        printf(" ");
+    }
+    printf("%s\n", texto);
 }
 
+void desenharLinhadupla() {
+    for (int i = 0; i < 80; i++) {
+        printf("=");
+    }
+    printf("\n");
+}
+void desenharLinhasimples() {
+    printf("    ");
+    for (int i = 0; i < 50; i++) {
+        printf("-");
+    }
+    printf("\n");
+}
+
+//executa algoritmo
 int main(){
 
     int a;
 
     do {
-        printf("\nDigite o número da opção desejada: ");
-        printf("\n1- Resolução de Sistemas Lineares\n");
-        printf("\n2- Verificação de Injetividade, Sobrejetividade e Bijetividade\n");
-        printf("\n3- Determinação de Bases\n");
-        printf("\n4- Cálculo de Autovalores e Autovetores de matrizes\n");
-        printf("\n5- Diagonalização de Matrizes 2x2\n");
-        printf("0- Encerra o programa\n");
+        printf("\n");
+        desenharLinhadupla();
+        centralizarTexto("PABLONATOR");
+        desenharLinhadupla();
+        centralizarTexto("\n    1- Resolucao de Sistemas Lineares");
+        desenharLinhasimples();
+        centralizarTexto("\n    2- Verificacao de Injetividade, Sobrejetividade e Bijetividade");
+        desenharLinhasimples();
+        centralizarTexto("\n    3- Determinacao de Bases");
+        desenharLinhasimples();
+        centralizarTexto("\n    4- Calculo de Autovalores e Autovetores de matrizes");
+        desenharLinhasimples();
+        centralizarTexto("\n    5- Diagonalizacao de Matrizes 2x2");
+        desenharLinhasimples();
+        centralizarTexto("0- Encerra o programa\n");
+        desenharLinhadupla();
+        printf("\nDigite o numero da opcao desejada: ");
         scanf("%d", &a);
+        limparTela();
 
-        limparTela();//limpa tela
-
-       switch(a){           
+       switch(a){
             case 1:
                 solucaoSistemaLinear();
                 break;
@@ -379,10 +435,32 @@ int main(){
                 diagonalizacao();
                 break;
             case 0:
-                printf("Programa encerrado ;)");
+                printf("Programa encerrado. Obrigado por usar a Pablonator =)");
+                return 0;
+            default:
+                printf("\nOpcao invalida. Digite uma das opcoes apresentadas no menu!\n\n");
                 break;
-       }        
+       }
+
+        do{
+            desenharLinhadupla();
+            centralizarTexto("Deseja encerrar o programa?");
+            desenharLinhadupla();
+            desenharLinhasimples();
+            centralizarTexto("\n    0-Sim.");
+            centralizarTexto("\n    1-Nao.");
+            desenharLinhasimples();
+            printf("\nDigite o numero da opcao desejada: ");
+            scanf("%d", &a);
+            limparTela();
+            if(a!= 0 && a!=1){
+                printf("\nOpcao invalida!\n\n");
+                
+            }
+        }while(a!=0 && a!=1);
+        limparTela();
     } while(a!=0);
+    printf("Programa encerrado. Obrigado por usar a Pablonator =)");
 
     return 0;
 }
