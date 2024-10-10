@@ -438,7 +438,7 @@ int main(){
                 printf("Programa encerrado. Obrigado por usar a Pablonator =)");
                 return 0;
             default:
-                printf("\nOpcao invalida. Digite uma das opcoes apresentadas no menu!\n\n");
+                printf(RED"\nOpcao invalida. Digite uma das opcoes apresentadas no menu!\n\n"RESET);
                 break;
        }
 
@@ -454,13 +454,13 @@ int main(){
             scanf("%d", &a);
             limparTela();
             if(a!= 0 && a!=1){
-                printf("\nOpcao invalida!\n\n");
+                printf(RED"\nOpcao invalida!\n\n"RESET);
                 
             }
         }while(a!=0 && a!=1);
         limparTela();
     } while(a!=0);
-    printf("Programa encerrado. Obrigado por usar a Pablonator =)");
+    printf("-- Programa encerrado. Obrigado por usar a Pablonator =) --");
 
     return 0;
 }
