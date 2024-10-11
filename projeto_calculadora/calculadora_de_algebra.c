@@ -203,7 +203,7 @@ void verificarTransformacaoMatriz() {
     printf("\nDigite os elementos da matriz %dx%d:\n\n", linhas, colunas);
     for (int i = 0; i < linhas; i++) {
         for (int j = 0; j < colunas; j++) {
-            printf("Digite o valor para a posição [%d][%d]: ", i, j);
+            printf("Digite o valor para a posicao [%d][%d]: ", i+1, j+1);
             scanf("%d", &mat[i][j]);
         }
     }
@@ -292,7 +292,6 @@ void calcularAutovalores(double a, double b, double c, double d, double *lambda1
     double discriminante = traco * traco - 4 * det;
 
     if (discriminante < 0) {
-        printf(GREEN"A matriz nao pode ser diagonalizada com autovalores reais.\n"RESET);
         return;
     }
     //realiza a raiz quadrada
@@ -323,13 +322,17 @@ void calcularAutovetor(double a, double b, double c, double d, double lambda, do
 //função para inserir valores e chamar as funções de autovetor e autovalor para realizar matematica
 void calculoAutovaloresAutovetores() {
     double a, b, c, d;
-    double lambda1, lambda2;
+    double lambda1 = 1134, lambda2;
     double v1_x, v1_y, v2_x, v2_y;
 
     printf("Digite os elementos da matriz 2x2 (a, b, c, d): \n");
     scanf("%lf %lf %lf %lf", &a, &b, &c, &d);
 
     calcularAutovalores(a, b, c, d, &lambda1, &lambda2);
+    if(lambda1 == 1134){
+        printf(GREEN"A matriz não possui autovalores. Digite uma matriz valida.\n"RESET);
+        return;
+    }
     printf("Autovalores:"GREEN" lambda1 = %.2f, lambda2 = %.2f"RESET"\n", lambda1, lambda2);
 
     // Calcular autovetor lambda1
@@ -343,7 +346,7 @@ void calculoAutovaloresAutovetores() {
 
 void diagonalizacao(){
     double a, b, c, d;
-    double lambda1, lambda2;
+    double lambda1= 1134, lambda2;
     double v1_x, v1_y, v2_x, v2_y;
 
     printf("Digite os elementos da matriz 2x2 (a, b, c, d): \n");
@@ -351,6 +354,10 @@ void diagonalizacao(){
 
     // Calcular diagonalizacao
     calcularAutovalores(a, b, c, d, &lambda1, &lambda2);
+    if(lambda1 == 1134){
+        printf(GREEN"A matriz não possui autovalores. Digite uma matriz valida.\n"RESET);
+        return;
+    }
     printf("Autovalores: "GREEN"lambda1 = %.2f, lambda2 = %.2f"RESET"\n", lambda1, lambda2);
     
     printf("Matriz diagonal D:\n");
